@@ -132,6 +132,10 @@ sub get_version {
 
     $version_cache->{$dist} =~ s/^$dist-//;
 
+    ## Add a "0" to fix issue where dpkg dies if a version component doesn't contain any base-10 digits
+    ## (which happens if the first 7 hex digits in a hash are all [a-f])
+    $version_cache->{$dist} =~ s/-g([0-9a-f]+)$/-0g$1/;
+
     die "couldn't find version for $dist" if !$version_cache->{$dist};
 
     return $version_cache->{$dist};
