@@ -70,9 +70,17 @@ sub fpm {
         }
 
 
+        my $deps_list;
+
+        if ($type eq 'deb') {
+            $deps_list = $args->{deps_deb} || $args->{deps};
+        } elsif ($type eq 'rpm') {
+            $deps_list = $args->{deps_rpm};
+        }
+
         my $deps = '';
 
-        foreach my $dep (@{ $args->{deps} }) {
+        foreach my $dep (@$deps_list) {
             $deps .= "-d '$dep' ";
         }
 
