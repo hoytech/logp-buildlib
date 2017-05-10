@@ -151,4 +151,20 @@ sub get_version {
 
 
 
+
+sub upload {
+    my $dir = "$ENV{HOME}/logp-internal";
+
+    die "unable to find ~/logp-internal files. run 's3fs logp-internal /home/doug/logp-internal/'"
+        if !-f "$dir/s3fs-mounted";
+
+    sys(qq{ cp -n dist/*.deb $dir/amd64/ });
+    sys(qq{cd $dir/amd64 ; dpkg-scanpackages amd64/ > amd64/Packages});
+    sys(qq{cd $dir/amd64 ; apt-ftparchive release amd64/ > amd64/Release});
+    sys(qq{gpg -a -b -u 'Log Periodic Ltd.' < $dir/amd64/Release > $dir/amd64/Release.gpg});
+}
+
+
+
+
 1;
